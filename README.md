@@ -6,7 +6,7 @@ A collection of QoL scripts to use while creating Mods for Forge. It's completel
 
 ## Usage/Examples
 
-Start by running the `start.py`, it will prompt you to copy your 'main' folder of your project. On Intellij, you can just click on the folder and press `Ctrl+Shift+C` and it will copy the absolute path of that folder.
+Start by running the `run.py`, it will prompt you to copy your 'main' folder of your project. On Intellij, you can just click on the folder and press `Ctrl+Shift+C` and it will copy the absolute path of that folder.
 
 After doing that, you can return to the script, if you copied it correctly, it will automatically ask you what script you wish to run, otherwise, you probably copied the wrong file.
 
