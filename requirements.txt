@@ -1,0 +1,2 @@
+javalang==0.13.0
+jsbeautifier==1.14.7
