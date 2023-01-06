@@ -58,7 +58,11 @@ class LangGenerator:
                     name = capitalizeWords(id)
                     registryType = registerClass["node"].declarators[0].initializer.arguments[0].member
                     self.langDir[f"{convertRegistryTypeToLangString(registryType)}.{setup.modId}.{id}"] = name
-        self.__output(setup.langFolder.joinpath("en_us.json"))
+        result = self.__output(setup.langFolder.joinpath("en_us.json"))
+        if result:
+            print("Your existing 'en_us.json' file was updated.")
+        else:
+            print("A 'en_us.json' file was created.")
 
     def __output(self, outputFile : str):
         prevJson = {}
@@ -70,3 +74,4 @@ class LangGenerator:
                     pass
         with open(outputFile, "w") as output:
             output.write(json.dumps({**self.langDir, **prevJson}, indent=2, sort_keys=True))
+            return len(prevJson) > 0

@@ -2,9 +2,11 @@ from setup import Setup
 from texture_assigner import TextureAssigner
 from lang_generator import LangGenerator
 
-def startup():
+def startup(reocurring = False):
     if setup.ready:
-        print("What do you wish do execute?")
+        if (not reocurring):
+            print("What do you wish do execute?")
+        else: print("What do you wish do execute next?")
         print(" 1: Texture Assigner")
         print(" 2: Lang Generator")
         print(" 3: Exit")
@@ -21,7 +23,7 @@ def startup():
             ta = LangGenerator()
             ta.start(setup)
 
-        startup()
+        startup(True)
 
 setup = Setup()
 
