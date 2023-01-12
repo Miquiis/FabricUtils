@@ -1,30 +1,44 @@
 from setup import Setup
 from texture_assigner import TextureAssigner
 from lang_generator import LangGenerator
+from project_creator import ProjectCreator
 
-def startup(reocurring = False):
-    if setup.ready:
-        if (not reocurring):
-            print("What do you wish do execute?")
-        else: print("What do you wish do execute next?")
-        print(" 1: Texture Assigner")
-        print(" 2: Lang Generator")
-        print(" 3: Exit")
-        inp = input("Enter your response: ")
+setup = None
 
-        if (inp == "3"): 
-            raise SystemExit
+def _getSetup():
+    global setup
+    if (not setup):
+        setup = Setup()
+    return setup
         
-        if (inp == "1"):
-            ta = TextureAssigner()
-            ta.start(setup)
+def startup(reocurring = False):
+    if (not reocurring):
+        print("What do you wish do execute?")
+    else: print("What do you wish do execute next?")
+    print(" 1: Project Creator (ONLY WORKS WITH MY PROJECTS)")
+    print(" 2: Texture Assigner")
+    print(" 3: Lang Generator")
+    print(" 0: Exit")
+    inp = input("Enter your response: ")
 
-        if (inp == "2"):
-            ta = LangGenerator()
-            ta.start(setup)
+    if (inp == "0"): 
+        raise SystemExit
+    
+    if (inp == "1"):
+        ta = ProjectCreator()
+        modId = input("Enter a mod id for the project: ")
+        modName = input("Enter a mod name for the project: ")
+        modDescription = input("Enter a mod description for the project: ")
+        ta.createProject(modId, modName, modDescription)
 
-        startup(True)
+    if (inp == "2"):
+        ta = TextureAssigner()
+        ta.start(_getSetup())
 
-setup = Setup()
+    if (inp == "3"):
+        ta = LangGenerator()
+        ta.start(_getSetup())
 
+    startup(True)
+    
 startup()
