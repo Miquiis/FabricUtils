@@ -37,6 +37,7 @@ class ProjectCreator:
         with open(os.path.join(self.projectFolder, 'gradle.properties'), 'r+b') as gradlePropertiesFile:
             gradleProperties.load(gradlePropertiesFile)
             gradleProperties["mod_id"] = self.modId
+            gradleProperties["mod_name"] = self.modName
             gradleProperties["mod_package"] = f"me.miquiis.{self.modId}"
             gradleProperties["mod_description"] = self.modDescription
             gradlePropertiesFile.seek(0)
