@@ -80,6 +80,29 @@ class ProjectCreator:
             with open(os.path.join(self.projectFolder, f'src\main\\resources\META-INF\mods.toml'), 'w') as fw:
                 toml.dump(modsToml, fw)
         
+        self.assetsFolder = os.path.join(self.projectFolder, f'src\\main\\resources\\assets\\{self.modId}')
+
+        # Creates directory for assets
+        if not os.path.exists(self.assetsFolder):
+            os.makedirs(self.assetsFolder)
+            
+            os.makedirs(os.path.join(self.assetsFolder, "geo"))
+            os.makedirs(os.path.join(self.assetsFolder, "animations"))
+            os.makedirs(os.path.join(self.assetsFolder, "models\\block"))
+            os.makedirs(os.path.join(self.assetsFolder, "models\\entity"))
+            os.makedirs(os.path.join(self.assetsFolder, "models\\item"))
+            os.makedirs(os.path.join(self.assetsFolder, "textures\\block"))
+            os.makedirs(os.path.join(self.assetsFolder, "textures\\entity"))
+            os.makedirs(os.path.join(self.assetsFolder, "textures\\item"))
+            os.makedirs(os.path.join(self.assetsFolder, "blockstates"))
+            os.makedirs(os.path.join(self.assetsFolder, "lang"))
+        
+        self.dataFolder = os.path.join(self.projectFolder, f'src\\main\\resources\\data\\{self.modId}')
+
+        # Creates directory for data
+        if not os.path.exists(self.dataFolder):
+            os.makedirs(self.dataFolder)
+        
         #Change Java Reference File
         with open(os.path.join(self.projectFolder, f'src\main\java\me\miquiis\{self.modId}\ModInformation.java'), "r") as f:
             data = f.read()
