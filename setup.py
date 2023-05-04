@@ -64,6 +64,9 @@ class Setup:
         self.modelItemFolder = self.modelsFolder.joinpath('item')
         checkFolder(self.modelBlockFolder, False, True)
         checkFolder(self.modelItemFolder, False, True)
-
+        self.geoFolder = self.modAssetsFolder.joinpath('geo')
+        checkFolder(self.geoFolder, False, True)
+        self.animationsFolder = self.modAssetsFolder.joinpath('animations')
+        checkFolder(self.animationsFolder, False, True)
 
         self.ready = True

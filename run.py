@@ -2,6 +2,7 @@ from setup import Setup
 from texture_assigner import TextureAssigner
 from lang_generator import LangGenerator
 from project_creator import ProjectCreator
+from animation_converter import AnimationConverter
 
 setup = None
 
@@ -18,6 +19,7 @@ def startup(reocurring = False):
     print(" 1: Project Creator (ONLY WORKS WITH MY PROJECTS)")
     print(" 2: Texture Assigner")
     print(" 3: Lang Generator")
+    print(" 4: Animation Converter")
     print(" 0: Exit")
     inp = input("Enter your response: ")
 
@@ -37,6 +39,10 @@ def startup(reocurring = False):
 
     if (inp == "3"):
         ta = LangGenerator()
+        ta.start(_getSetup())
+
+    if (inp == "4"):
+        ta = AnimationConverter()
         ta.start(_getSetup())
 
     startup(True)
