@@ -36,67 +36,73 @@ class ProjectCreator:
         gradleProperties = Properties()
         with open(os.path.join(self.projectFolder, 'gradle.properties'), 'r+b') as gradlePropertiesFile:
             gradleProperties.load(gradlePropertiesFile)
-            gradleProperties["mod_id"] = self.modId
-            gradleProperties["mod_name"] = self.modName
-            gradleProperties["mod_package"] = f"me.miquiis.{self.modId}"
-            gradleProperties["mod_description"] = self.modDescription
+            gradleProperties["archives_base_name"] = self.modId
+            gradleProperties["maven_group"] = "work.tbnr"
             gradlePropertiesFile.seek(0)
             gradlePropertiesFile.truncate(0)
             gradleProperties.store(gradlePropertiesFile)
 
         # Rename package
-        os.rename(os.path.join(self.projectFolder, 'src\main\java\me\miquiis\examplemod'), os.path.join(self.projectFolder, f'src\main\java\me\miquiis\{self.modId}'))
+        os.rename(os.path.join(self.projectFolder, 'src\main\java\work\\tbnr\examplemod'), os.path.join(self.projectFolder, f'src\main\java\work\\tbnr\{self.modId}'))
 
         # Refactor all packages
-        for root, dirs, files in os.walk( os.path.join(self.projectFolder, f'src\main\java\me\miquiis\{self.modId}'), topdown=False):
+        for root, dirs, files in os.walk( os.path.join(self.projectFolder, f'src\main\java\work\\tbnr\{self.modId}'), topdown=False):
             for file in files:
                 if(file.endswith(".java")):
                     filePath = os.path.join(root, file)
                     with open(filePath, "r") as f:
                         data = f.read()
-                        data = data.replace("me.miquiis.examplemod", "me.miquiis." + self.modId)
+                        data = data.replace("work.tbnr.examplemod", "work.tbnr." + self.modId)
                         with open(filePath, "w") as fw:
                             fw.write(data)
 
         #Rename Mixin Json
-        os.rename(os.path.join(self.projectFolder, 'src\main\\resources\examplemod.mixin.json'), os.path.join(self.projectFolder, f'src\main\\resources\{self.modId}.mixin.json'))
+        os.rename(os.path.join(self.projectFolder, 'src\main\\resources\examplemod.mixins.json'), os.path.join(self.projectFolder, f'src\main\\resources\{self.modId}.mixins.json'))
 
         #Adjust Mixin Json properties
-        with open(os.path.join(self.projectFolder, f'src\main\\resources\{self.modId}.mixin.json'), 'r') as f:
+        with open(os.path.join(self.projectFolder, f'src\main\\resources\{self.modId}.mixins.json'), 'r') as f:
             mixinJson = json.load(f)
-            mixinJson["package"] = f'me.miquiis.{self.modId}.mixin'
-            mixinJson["refmap"] = f'{self.modId}.mixin-refmap.json'
-            with open(os.path.join(self.projectFolder, f'src\main\\resources\{self.modId}.mixin.json'), 'w') as fw:
+            mixinJson["package"] = f'work.tbnr.{self.modId}.mixin'
+            with open(os.path.join(self.projectFolder, f'src\main\\resources\{self.modId}.mixins.json'), 'w') as fw:
                 json.dump(mixinJson, fw, indent=2)
         
-        #Adjust META-INF mods.toml
-        with open(os.path.join(self.projectFolder, f'src\main\\resources\META-INF\mods.toml'), 'rb') as f:
-            modsToml = tomllib.load(f)
-            modsToml["mods"][0]["modId"] = self.modId
-            modsToml["mods"][0]["displayName"] = self.modName
-            modsToml["mods"][0]["description"] = self.modDescription
-            modsToml["dependencies"][self.modId] = modsToml["dependencies"]["examplemod"]
-            modsToml["dependencies"].pop("examplemod")
-            with open(os.path.join(self.projectFolder, f'src\main\\resources\META-INF\mods.toml'), 'w') as fw:
-                toml.dump(modsToml, fw)
-        
+        #Adjust Fabric Json properties
+        with open(os.path.join(self.projectFolder, f'src\main\\resources\\fabric.mod.json'), 'r') as f:
+            fabricJson = json.load(f)
+            fabricJson["id"] = self.modId
+            fabricJson["name"] = self.modName
+            fabricJson["description"] = self.modDescription
+            fabricJson["icon"] = f"assets/{self.modId}/icon.png"
+            
+            fabricJson["entrypoints"]["main"] = [f"work.tbnr.{self.modId}.ExampleMod"]
+            fabricJson["entrypoints"]["client"] = [f"work.tbnr.{self.modId}.ExampleMod"]
+            fabricJson["entrypoints"]["fabric-datagen"] = [f"work.tbnr.{self.modId}.common.registry.ModDataGenerators"]
+
+            fabricJson["mixins"] = [f"{self.modId}.mixins.json"]
+
+            with open(os.path.join(self.projectFolder, f'src\main\\resources\\fabric.mod.json'), 'w') as fw:
+                json.dump(fabricJson, fw, indent=2)
+
+        # Rename current assets folder
+        os.rename(os.path.join(self.projectFolder, 'src\main\\resources\\assets\\examplemod'), os.path.join(self.projectFolder, f'src\main\\resources\\assets\\{self.modId}'))
+
         self.assetsFolder = os.path.join(self.projectFolder, f'src\\main\\resources\\assets\\{self.modId}')
 
         # Creates directory for assets
         if not os.path.exists(self.assetsFolder):
-            os.makedirs(self.assetsFolder)
-            
-            os.makedirs(os.path.join(self.assetsFolder, "geo"))
-            os.makedirs(os.path.join(self.assetsFolder, "animations"))
-            os.makedirs(os.path.join(self.assetsFolder, "models\\block"))
-            os.makedirs(os.path.join(self.assetsFolder, "models\\entity"))
-            os.makedirs(os.path.join(self.assetsFolder, "models\\item"))
-            os.makedirs(os.path.join(self.assetsFolder, "textures\\block"))
-            os.makedirs(os.path.join(self.assetsFolder, "textures\\entity"))
-            os.makedirs(os.path.join(self.assetsFolder, "textures\\item"))
-            os.makedirs(os.path.join(self.assetsFolder, "blockstates"))
-            os.makedirs(os.path.join(self.assetsFolder, "lang"))
+            os.makedirs(self.assetsFolder, exist_ok=True)
         
+        os.makedirs(os.path.join(self.assetsFolder, "geo"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "animations"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "models\\block"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "models\\entity"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "models\\item"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "textures\\block"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "textures\\entity"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "textures\\item"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "blockstates"), exist_ok=True)
+        os.makedirs(os.path.join(self.assetsFolder, "lang"), exist_ok=True)
+
         self.dataFolder = os.path.join(self.projectFolder, f'src\\main\\resources\\data\\{self.modId}')
 
         # Creates directory for data
@@ -104,11 +110,11 @@ class ProjectCreator:
             os.makedirs(self.dataFolder)
         
         #Change Java Reference File
-        with open(os.path.join(self.projectFolder, f'src\main\java\me\miquiis\{self.modId}\ModInformation.java'), "r") as f:
+        with open(os.path.join(self.projectFolder, f'src\main\java\work\\tbnr\{self.modId}\ModInformation.java'), "r") as f:
             data = f.read()
             data = data.replace("examplemod", self.modId)
             data = data.replace("ExampleMod", self.modName)
-            with open(os.path.join(self.projectFolder, f'src\main\java\me\miquiis\{self.modId}\ModInformation.java'), "w") as fw:
+            with open(os.path.join(self.projectFolder, f'src\main\java\work\\tbnr\{self.modId}\ModInformation.java'), "w") as fw:
                 fw.write(data)
 
     def _dumps_value(self, value):
