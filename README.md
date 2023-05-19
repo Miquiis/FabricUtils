@@ -1,8 +1,7 @@
 
-# ForgeUtils
+# FabricUtils (old ForgeUtils)
 
-A collection of QoL scripts to use while creating Mods for Forge. It's completely written in Python, but essentially want to move over to Intellij for easy access.
-
+A collection of QoL scripts to use while creating Mods for Fabric. It's completely written in Python, but essentially want to move over to Intellij for easy access.
 
 ## Usage/Examples
 
