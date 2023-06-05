@@ -2,6 +2,8 @@ from pathlib import Path
 import tomllib
 from tkinter import Tk
 import time
+import os
+import json
 
 def checkFolder(path, isCritical = True, createFolder = False):
     folder = path.name
@@ -38,15 +40,9 @@ class Setup:
             print("Error: The 'resource' folder was not able to be found. Make sure your project is setup correctly.")
             return
         
-        self.metainfFolder = self.resourceFolder.joinpath("META-INF")
-
-        if (not self.metainfFolder.exists()):
-            print("Error: Missing 'META-INF' folder inside your 'resources' folder.")
-            return
-        
-        with open(self.metainfFolder.joinpath('mods.toml'), 'rb') as f:
-            data = tomllib.load(f)
-            self.modId = data.get('mods')[0].get('modId')
+        with open(os.path.join(self.projectFolder, f'resources\\fabric.mod.json'), 'r') as f:
+            fabricJson = json.load(f)
+            self.modId = fabricJson["id"]
 
         self.modAssetsFolder = self.resourceFolder.joinpath('assets', self.modId)
         checkFolder(self.modAssetsFolder)
