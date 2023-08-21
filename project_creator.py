@@ -3,7 +3,7 @@ from pathlib import Path
 from tkinter import Tk
 from jproperties import Properties
 import tomllib
-import os
+import os, stat
 import json
 import toml
 
@@ -19,6 +19,9 @@ class ProjectCreator:
         self.templateFolder = self.getTemplateFolder()
         self.destinationFolder = Path(self.getDestinationFolder()).joinpath(modName)
         self.projectFolder = shutil.copytree(self.templateFolder, self.destinationFolder)
+
+        # os.chmod(os.path.join(self.projectFolder, '.git'), stat.S_IWRITE)
+        # shutil.rmtree(os.path.join(self.projectFolder, '.git'))
 
         self.updateVariables()
 
